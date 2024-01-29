@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Image;
 
 
 class AuthController extends Controller
@@ -27,11 +28,15 @@ class AuthController extends Controller
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
         $user->role = $request->role;
-        if ($request->has('image')) {
-            $file = $request->file('image');
-            $fileName = time().'_'.$file->getClientOriginalName();
-            $filePath = $file->storeAs('uploads', $fileName, 'public');
-            $user->image = '/storage/' . $filePath;
+        if ($request->hasFile('image') != null) {
+            $fileName = time() . '.' . $request->image->extension();
+            $path = 'uploads/users/';
+            if (!is_dir($path)) {
+                mkdir($path, 0755, true);
+            }
+            $path = public_path('uploads/users/') . $fileName;
+            Image::make($request->image)->save($path);
+            $user->image = 'uploads/users/' . $fileName;
         }
         $user->save();
 
@@ -72,16 +77,11 @@ class AuthController extends Controller
     public function connectedUser()
     
     {
-      
         $user = auth()->user();
         return response()->json([
             'message'=> 'Utilisateur connecté:',
             'user'=>$user
-           
         ]);
-        
- 
-        
     }
 
     /**
