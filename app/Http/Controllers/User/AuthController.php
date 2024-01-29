@@ -15,7 +15,7 @@ use Image;
 class AuthController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     *php composer.phar require intervention/image Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
@@ -28,15 +28,28 @@ class AuthController extends Controller
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
         $user->role = $request->role;
-        if ($request->hasFile('image') != null) {
+       
+
+
+
+
+
+        if ($request->has('image')) {
+            $file = $request->file('image');
             $fileName = time() . '.' . $request->image->extension();
             $path = 'uploads/users/';
-            if (!is_dir($path)) {
-                mkdir($path, 0755, true);
+            
+            $publicPath = public_path($path);
+            if (!is_dir($publicPath)) {
+                mkdir($publicPath, 0755, true);
             }
-            $path = public_path('uploads/users/') . $fileName;
-            Image::make($request->image)->save($path);
-            $user->image = 'uploads/users/' . $fileName;
+            $file->move($publicPath, $fileName);
+            $user->image = $publicPath . $fileName;
+
+        
+            // $filePath = $file->storeAs($path, $fileName, 'public');
+            // $user->image = $file->make($fileName)->save($path);
+            // $user->image = $filePath;
         }
         $user->save();
 
