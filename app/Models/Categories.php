@@ -9,9 +9,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Categories extends Model
 {
     use HasFactory, SoftDeletes;
-    protected $table='categories';
+    protected $table = 'categories';
     protected $fillable = [
-       'name',
-      
-   ];
+        'name',
+    ];
+    public function images()
+    {
+        return $this->belongsToMany(Image::class);
+    }
 }

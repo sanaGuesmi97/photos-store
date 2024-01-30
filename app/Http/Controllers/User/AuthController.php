@@ -29,11 +29,6 @@ class AuthController extends Controller
         $user->password = bcrypt($request->password);
         $user->role = $request->role;
        
-
-
-
-
-
         if ($request->has('image')) {
             $file = $request->file('image');
             $fileName = time() . '.' . $request->image->extension();
@@ -45,11 +40,6 @@ class AuthController extends Controller
             }
             $file->move($publicPath, $fileName);
             $user->image = $publicPath . $fileName;
-
-        
-            // $filePath = $file->storeAs($path, $fileName, 'public');
-            // $user->image = $file->make($fileName)->save($path);
-            // $user->image = $filePath;
         }
         $user->save();
 
