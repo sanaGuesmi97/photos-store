@@ -18,7 +18,6 @@ return new class extends Migration {
             $table->string('title');
             $table->string('description');
             $table->integer('price');
-            $table->string('category');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')
                 ->nullable()

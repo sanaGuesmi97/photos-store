@@ -31,12 +31,17 @@ Route::post('/restorecategory/{id}', [CategoriesController::class, 'restore']);
 Route::post('/storeImage', [ImageController::class, 'store']);
 Route::get('/getImage', [ImageController::class, 'index']);
 Route::get('/getImage/{id}', [ImageController::class, 'show']);
+Route::put('/updateImage/{id}', [ImageController::class, 'update']);
+Route::delete('/deleteImage/{id}', [ImageController::class, 'destroy']);
+Route::post('/restoreImage/{id}', [ImageController::class, 'restore']);
+
 
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/connectedUser', [AuthController::class, 'connectedUser']);
+    
   
    
     
