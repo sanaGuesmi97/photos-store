@@ -27,14 +27,24 @@ class StoreImageRequest extends FormRequest
             'title' => 'required',
             'description' => 'required',
             'price' => 'required',
-            'category' => 'required',
             'userId' => 'required',
             'categoryId' => 'required',
-            'image'=>'required|mimes:jpeg,png,gif,svg|max:2048'
+            'image'=>'required|mimes:jpeg,png,gif,svg'
             
         ];
     }
-    public function messages(){
+   
+        public function messages(){
+            return [
+                'title.required' => 'Le champ titre est obligatoire.',
+                'description.required' => 'Le champ description est obligatoire.',
+                'price.required' => 'Le champ prix est obligatoire.',
+                'userId.required' => 'Le champ id user est obligatoire.',
+                'categoryId.required' => 'Le champ id category  est obligatoire.',
+                'image.required' => 'Le champ image est obligatoire.',
+            ];
+        }
+
 
     }
-}
+
