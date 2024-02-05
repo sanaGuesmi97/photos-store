@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\Image\ImageController;
 use App\Http\Controllers\User\AuthController;
@@ -19,28 +20,18 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::post('/storecategory', [CategoriesController::class, 'store']);
-Route::get('/getcategory', [CategoriesController::class, 'index']);
-Route::get('/getcategory/{id}', [CategoriesController::class, 'show']);
-Route::put('/updatecategory/{id}', [CategoriesController::class, 'update']);
-Route::delete('/deletecategory/{id}', [CategoriesController::class, 'destroy']);
-Route::post('/restorecategory/{id}', [CategoriesController::class, 'restore']);
 
+Route::apiResource('category', CategoriesController::class);
+Route::apiResource('image', ImageController::class);
+Route::apiResource('article', ArticleController::class);
+Route::post('/restore-article/{id}', [ArticleController::class, 'restore']);
+Route::post('/restore-image/{id}', [ImageController::class, 'restore']);
 
+Route::group(['middleware' => ['auth:sanctum']], function () { 
+ Route::post('/logout', [AuthController::class, 'logout']);
+ Route::get('/connectedUser', [AuthController::class, 'connectedUser']);
+   
 
-Route::post('/storeImage', [ImageController::class, 'store']);
-Route::get('/getImage', [ImageController::class, 'index']);
-Route::get('/getImage/{id}', [ImageController::class, 'show']);
-Route::put('/updateImage/{id}', [ImageController::class, 'update']);
-Route::delete('/deleteImage/{id}', [ImageController::class, 'destroy']);
-Route::post('/restoreImage/{id}', [ImageController::class, 'restore']);
-
-
-
-Route::group(['middleware' => ['auth:sanctum']], function () {
-    
-    Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/connectedUser', [AuthController::class, 'connectedUser']);
     
   
    

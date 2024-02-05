@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Image extends Model
@@ -16,7 +17,8 @@ class Image extends Model
         'description',
         'price',
         'user_id',
-        'category_id'
+        'category_id',
+        'article_id'
     ];
    
 
@@ -29,6 +31,10 @@ class Image extends Model
 
     public function categories()
     {
-        return $this->belongsToMany(Categories::class);
+        return $this->belongsTo(Categories::class,"category_id");
+    }
+    public function article(): BelongsTo
+    {
+        return $this->belongsTo(Article::class);
     }
 }

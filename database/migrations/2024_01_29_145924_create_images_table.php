@@ -23,13 +23,12 @@ return new class extends Migration {
                 ->nullable()
                 ->references('id')
                 ->on('users');
-
             $table->unsignedBigInteger('category_id');
             $table->foreign('category_id')
                 ->nullable()
                 ->references('id')
                 ->on('categories');
-
+               
             $table->timestamps();
         });
     }

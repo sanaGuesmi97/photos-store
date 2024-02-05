@@ -18,10 +18,11 @@ class ImageResource extends JsonResource
             "id" => $this->id,
             "description" => $this->description,
             "price" => $this->price,
-            "category" => $this->category,
-            "userId" => $this->userId,
-            "categoryId" => $this->categoryId,
-            "image" => $this->image,
+            "categories" => $this->category_id,
+            "user" => $this->user,
+            "article_id"=>$this->article_id
+       
+            // "image" => $this->image,
         ];
     }
 }
