@@ -26,7 +26,6 @@ class ImageController extends Controller
         }
 
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -40,8 +39,9 @@ class ImageController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    // public function store(Request $request)
 
+    public function store(Request $request)
     {
         try {
             $image = new Image();
@@ -50,6 +50,7 @@ class ImageController extends Controller
             $image->price = $request->price;
             $image->user_id = $request->userId;
             $image->category_id = $request->categoryId;
+            $image->article_id = $request->articleId;
             if ($request->has('image')) {
                 $file = $request->file('image');
                 $fileName = time() . '.' . $request->image->extension();
@@ -66,17 +67,16 @@ class ImageController extends Controller
             return $image;
         } catch (\Exception $e) {
             return $e->getMessage();
-        }
+        } 
+
+
+
+
+
+
+
 
     }
-   
-
-
-
-
- 
-
-
     /**
      * Display the specified resource.
      *
@@ -87,21 +87,18 @@ class ImageController extends Controller
     {
         try {
             $image = Image::findOrFail($id);
-            return $image;
+            return new ImageResource($image);
         } catch (\Exception $e) {
             return $e->getMessage();
         }
         ;
     }
-
     /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
- 
-
     /**
      * Update the specified resource in storage.
      *
@@ -113,11 +110,11 @@ class ImageController extends Controller
     {
         try {
             $image = Image::find($id);
-    
+
             if (!$image) {
                 return response()->json(['message' => 'Image not found'], 404);
             }
-    
+
             if ($request->has('title')) {
                 $image->title = $request->title;
             }
@@ -132,31 +129,30 @@ class ImageController extends Controller
             }
             if ($request->has('categoryId')) {
                 $image->category_id = $request->categoryId;
-            }
-            
-            if ($request->has('image')) {
-              
+            }if ($request->has('articleId')) {
+                $image->article_id = $request->articleId;
+
+            }if ($request->has('image')) {
+
                 $file = $request->file('image');
                 $fileName = time() . '.' . $request->image->extension();
                 $path = 'uploads/images/';
-    
+
                 $publicPath = public_path($path);
                 $file->move($publicPath, $fileName);
-    
+
                 // Update image file path in the database
                 $image->image = $path . $fileName;
             }
-    
+
             $image->save();
-    
+
             return response()->json(['message' => 'Image updated successfully']);
-    
+
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-    
-
     /**
      * Remove the specified resource from storage.
      *
@@ -165,14 +161,14 @@ class ImageController extends Controller
      */
     public function destroy($id)
     {
-        $image=Image::find($id);
+        $image = Image::find($id);
         $image->delete();
-        return'deleted';
+        return 'deleted';
     }
     public function restore($id)
     {
-        $image=Image::withTrashed()->find($id);
+        $image = Image::withTrashed()->find($id);
         $image->restore();
-        return'restored one';
+        return 'restored one';
     }
 }
