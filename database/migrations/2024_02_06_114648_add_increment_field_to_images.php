@@ -13,8 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('articles', function (Blueprint $table) {
-            $table->softDeletes();
+        Schema::table('images', function (Blueprint $table) {
+            $table->integer('increment');
         });
     }
 
@@ -25,8 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('articles', function (Blueprint $table) {
-            $table->dropSoftDeletes();
+        Schema::table('images', function (Blueprint $table) {
+            //
         });
     }
 };

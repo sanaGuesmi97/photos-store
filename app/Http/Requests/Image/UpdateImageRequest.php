@@ -29,7 +29,7 @@ class UpdateImageRequest extends FormRequest
             'price'=>'sometimes',
             'userId'=>'sometimes',
             'categoryId'=>'sometimes',
-            'image'=>'sometimes',
+            'image'=>'nullable',
         ];
         
     }

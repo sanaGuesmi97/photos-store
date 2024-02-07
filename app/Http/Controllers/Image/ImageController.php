@@ -24,7 +24,6 @@ class ImageController extends Controller
         } catch (\Exception $e) {
             return $e->getMessage();
         }
-
     }
     /**
      * Show the form for creating a new resource.
@@ -44,38 +43,39 @@ class ImageController extends Controller
     public function store(Request $request)
     {
         try {
-            $image = new Image();
-            $image->title = $request->title;
-            $image->description = $request->description;
-            $image->price = $request->price;
-            $image->user_id = $request->userId;
-            $image->category_id = $request->categoryId;
-            $image->article_id = $request->articleId;
-            if ($request->has('image')) {
-                $file = $request->file('image');
-                $fileName = time() . '.' . $request->image->extension();
-                $path = 'uploads/images/';
+            $maxIncrement = Image::max('increment');
+            $i = $maxIncrement + 1;
+            $images = $request->file('images');
+            $imagePaths = [];
+            foreach ($images as $file) {
+                if ($file->isValid()) {
+                    $fileName = time() . '_' . $file->getClientOriginalName();
+                    $path = 'uploads/images/';
+                    $publicPath = public_path($path);
 
-                $publicPath = public_path($path);
-                if (!is_dir($publicPath)) {
-                    mkdir($publicPath, 0755, true);
+                    if (!is_dir($publicPath)) {
+                        mkdir($publicPath, 0755, true);
+                    }
+                    $file->move($publicPath, $fileName);
+                    $imagePaths[] = $path . $fileName;
                 }
-                $file->move($publicPath, $fileName);
-                $image->image = $publicPath . $fileName;
             }
-            $image->save();
-            return $image;
+            foreach ($imagePaths as $imagePath) {
+                $image = new Image();
+                $image->title = $request->title;
+                $image->description = $request->description;
+                $image->price = $request->price;
+                $image->user_id = $request->userId;
+                $image->category_id = $request->categoryId;
+                $image->image = $imagePath;
+                $image->increment = $i;
+                $image->save();
+            }
+            // return $image;
+            return response()->json(['message' => 'Images uploaded successfully']);
         } catch (\Exception $e) {
             return $e->getMessage();
-        } 
-
-
-
-
-
-
-
-
+        }
     }
     /**
      * Display the specified resource.
@@ -91,7 +91,6 @@ class ImageController extends Controller
         } catch (\Exception $e) {
             return $e->getMessage();
         }
-        ;
     }
     /**
      * Show the form for editing the specified resource.
@@ -109,50 +108,68 @@ class ImageController extends Controller
     public function update(UpdateImageRequest $request, $id)
     {
         try {
-            $image = Image::find($id);
+            if (!$request->filled('images')) {
+                return response()->json(['message' => 'No images to update'], 400);
+            }
+            $existingImage = Image::find($id);
 
-            if (!$image) {
+            if (!$existingImage) {
                 return response()->json(['message' => 'Image not found'], 404);
             }
+            $currentIncrement = $existingImage->increment;
 
-            if ($request->has('title')) {
-                $image->title = $request->title;
+            $imagesToUpdate = $request->file('images');
+
+            foreach ($imagesToUpdate as $file) {
+
+                $image = Image::find($id);
+
+                if (!$image) {
+                    return response()->json(['message' => 'Image not found'], 404);
+                }
+                if ($file->isValid()) {
+                    $fileName = time() . '_' . $file->getClientOriginalName();
+                    $path = 'uploads/images/';
+                    $publicPath = public_path($path);
+
+                    if (!is_dir($publicPath)) {
+                        mkdir($publicPath, 0755, true);
+                    }
+
+                    $file->move($publicPath, $fileName);
+
+                    $image->image = $path . $fileName;
+
+                    if ($request->filled('title')) {
+                        $image->title = $request->title;
+                    }
+                    if ($request->filled('description')) {
+                        $image->description = $request->description;
+                    }
+                    if ($request->filled('price')) {
+                        $image->price = $request->price;
+                    }
+                    if ($request->filled('userId')) {
+                        $image->user_id = $request->userId;
+                    }
+                    if ($request->filled('categoryId')) {
+                        $image->category_id = $request->categoryId;
+                    }
+
+                    // Utiliser l'incrément actuel pour la mise à jour
+                    $image->increment = $currentIncrement;
+
+                    $image->save();
+                }
             }
-            if ($request->has('description')) {
-                $image->description = $request->description;
-            }
-            if ($request->has('price')) {
-                $image->price = $request->price;
-            }
-            if ($request->has('userId')) {
-                $image->user_id = $request->userId;
-            }
-            if ($request->has('categoryId')) {
-                $image->category_id = $request->categoryId;
-            }if ($request->has('articleId')) {
-                $image->article_id = $request->articleId;
 
-            }if ($request->has('image')) {
-
-                $file = $request->file('image');
-                $fileName = time() . '.' . $request->image->extension();
-                $path = 'uploads/images/';
-
-                $publicPath = public_path($path);
-                $file->move($publicPath, $fileName);
-
-                // Update image file path in the database
-                $image->image = $path . $fileName;
-            }
-
-            $image->save();
-
-            return response()->json(['message' => 'Image updated successfully']);
+            return response()->json(['message' => 'Images updated successfully']);
 
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
     /**
      * Remove the specified resource from storage.
      *

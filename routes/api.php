@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\ArticleController;
+
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\Image\ImageController;
 use App\Http\Controllers\User\AuthController;
@@ -23,8 +23,7 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::apiResource('category', CategoriesController::class);
 Route::apiResource('image', ImageController::class);
-Route::apiResource('article', ArticleController::class);
-Route::post('/restore-article/{id}', [ArticleController::class, 'restore']);
+
 Route::post('/restore-image/{id}', [ImageController::class, 'restore']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () { 

@@ -18,7 +18,8 @@ class Image extends Model
         'price',
         'user_id',
         'category_id',
-        'article_id'
+        'increment'
+        
     ];
    
 
@@ -33,8 +34,5 @@ class Image extends Model
     {
         return $this->belongsTo(Categories::class,"category_id");
     }
-    public function article(): BelongsTo
-    {
-        return $this->belongsTo(Article::class);
-    }
+    
 }
