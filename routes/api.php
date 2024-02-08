@@ -3,6 +3,7 @@
 
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\Image\ImageController;
+use App\Http\Controllers\Review\ReviewController;
 use App\Http\Controllers\User\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,9 +27,13 @@ Route::apiResource('image', ImageController::class);
 
 Route::post('/restore-image/{id}', [ImageController::class, 'restore']);
 
+
 Route::group(['middleware' => ['auth:sanctum']], function () { 
  Route::post('/logout', [AuthController::class, 'logout']);
  Route::get('/connectedUser', [AuthController::class, 'connectedUser']);
+ Route::post('/addReview', [ReviewController::class, 'addReview']);
+ 
+
    
 
     

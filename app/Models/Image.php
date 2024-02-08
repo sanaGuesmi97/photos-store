@@ -18,12 +18,8 @@ class Image extends Model
         'price',
         'user_id',
         'category_id',
-        'increment'
-        
+        'increment'        
     ];
-   
-
-
 
     public function user()
     {
