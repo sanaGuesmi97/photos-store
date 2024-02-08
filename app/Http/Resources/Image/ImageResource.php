@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Image;
 
+use App\Http\Resources\Categories\CategoriesResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ImageResource extends JsonResource
@@ -18,11 +19,10 @@ class ImageResource extends JsonResource
             "id" => $this->id,
             "description" => $this->description,
             "price" => $this->price,
-            "categories" => $this->category_id,
+            "categories" => new CategoriesResource($this->categories),
             "user" => $this->user,
-          
-       
-            // "image" => $this->image,
+            "increment" => $this->increment,
+            "file" => $this->image
         ];
     }
 }
