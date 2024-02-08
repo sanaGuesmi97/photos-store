@@ -20,7 +20,7 @@ class ImageResource extends JsonResource
             "price" => $this->price,
             "categories" => $this->category_id,
             "user" => $this->user,
-            "article_id"=>$this->article_id
+          
        
             // "image" => $this->image,
         ];
